@@ -233,6 +233,38 @@ A12).
 > El TOTAL de 414,618 son **yuanes**, no pesos ni dólares. Falta encima:
 > tipo de cambio, flete, arancel, IVA y margen.
 
+### El precio de gabinete se arma desde la tabla de tablero
+
+Las secciones de puerta (págs. 51-88) **no traen precio propio**. Remiten al
+*Panel Material Summary* — la tabla de tablero — y encima suman recargos:
++23/m², +125/m² con bisagra, +173 por hoja, +150 por esquina de ensamble,
++150 por cara de ranurado. No hay un "precio de gabinete" separado en el
+manual: el gabinete se construye desde el precio del tablero.
+
+Por eso la tabla de tablero es la base de todo el cálculo. Está extraída en
+[`datos/precios-tablero-a11.csv`](../datos/precios-tablero-a11.csv): **801
+precios, 125 materiales, páginas 14-50**, con la trazabilidad contra los ocho
+costos de la matriz.
+
+### ⚠️ El manual solo se leyó hasta la página 87 de 311
+
+El conector de Drive cortó la extracción en la página 87. Lo que quedó fuera:
+
+| Sección | Págs. | Estado |
+|---|---|---|
+| Partes decorativas | 89-182 | ❌ |
+| Herrajes completos | 183-300 | ❌ |
+| **Cuerpo de gabinete de cocina** | **301** | ❌ |
+| Especificación de pedido | 302-312 | ❌ |
+
+Las conclusiones de moneda y coeficientes se sostienen — viven en las páginas
+12 a 50, que sí se leyeron completas. Pero el factor 3.5 (pregunta abierta 3)
+está en la P.301, fuera de alcance.
+
+**Para completarlo:** el conector descarga hasta 10 MB y el PDF pesa 34 MB.
+Partido en cuatro (págs. 1-80, 81-160, 161-240, 241-311), cada parte se puede
+descargar y procesar con `pdfplumber` a fidelidad completa.
+
 ### 🔴 Las bandas de altura del Excel están mal planteadas
 
 El manual **no maneja tres precios por altura**. Maneja **un precio estándar a
