@@ -180,47 +180,160 @@ Sin tipo de cambio, flete, aduana ni IVA.
 
 ---
 
-## 4. Preguntas abiertas
+## 4. El manual técnico de cotización
 
-1. **¿En qué moneda está la columna `COSTO REAL`?** ¿RMB de fábrica, USD FOB, o
-   ya nacionalizado en MXN? De esto depende todo lo demás.
+> Incorporado el 8 de septiembre de 2026, leyendo el Drive de la cuenta de
+> empresa (`coomomx@gmail.com`).
+
+### Qué es cada archivo
+
+El archivo del Drive llamado **`Lista de precio cabinets`** (PDF, 34 MB) **no es
+la cotización de México**. Es el **manual técnico de cotización de COOMO,
+edición A11, del 14/abr/2026**, 311 páginas, en versión bilingüe
+chino-inglés. Es decir: la pieza que se daba por faltante ya estaba en el Drive,
+bajo otro nombre.
+
+| Archivo | Qué es | Estado |
+|---|---|---|
+| `Lista de precio cabinets` (PDF, 34 MB) | Manual técnico **A11**, 14/abr/2026, 311 pp. | ✅ Leído |
+| `楷模定制技术报价手册 A12版2026.7.01给墨西哥.xlsx` (754 MB) | Manual **A12**, 1/jul/2026, "para México" | ❌ Ilegible, ver abajo |
+
+El A12 es un **Excel, no un PDF**, y pesa 754 MB — el extractor devuelve
+contenido vacío. Casi con certeza son fotos de producto incrustadas; los datos
+de celda deben pesar poco. **Para leerlo hay que exportar sus hojas a CSV** (o
+guardar una copia sin imágenes) y volver a subirla al Drive.
+
+`Matriz_Precios_1.xlsx` **no está en el Drive de la empresa** — sigue en la
+cuenta personal.
+
+### 🟢 Resuelto: la moneda
+
+El manual cotiza todo en **`RMB/m²`**, con dos columnas: `Factory Price`
+(precio de fábrica) y `Selling Price`. Los recargos van en yuanes (`元`):
+150 元 por esquina de ensamble, 150 元 por cara de ranurado, 173 元 por hoja.
+
+El cruce contra el Excel es exacto. Los tableros se cotizan por espesor:
+
+```
+木皮板 双面  (chapa de madera, dos caras)
+  9mm → 954    18mm → 1015    25mm → 1065
+  40mm → 1128  60mm → 1187    70mm → 1215
+
+双面多层板  (multilaminado, dos caras)
+  9mm → 722    18mm → 842     25mm → 962
+  40mm → 1021  60mm → 1067    70mm → 1089
+```
+
+**`1015` — el primer costo del Excel — es el precio de fábrica del tablero de
+chapa a dos caras en 18 mm.** También coinciden como valores del manual 1746,
+1003, 344, 1198, 213 y 330. Solo 1304 no aparece (posible cambio entre A11 y
+A12).
+
+> **Conclusión: la columna `COSTO REAL` es precio de fábrica COOMO en RMB/m².**
+> El TOTAL de 414,618 son **yuanes**, no pesos ni dólares. Falta encima:
+> tipo de cambio, flete, arancel, IVA y margen.
+
+### 🔴 Las bandas de altura del Excel están mal planteadas
+
+El manual **no maneja tres precios por altura**. Maneja **un precio estándar a
+medida 2420×1200 mm, multiplicado por un coeficiente** según el tamaño real
+(regla 1 de la P.12: *"All panel prices quoted at std. size 2420×1200mm"*):
+
+| Material | Rango | Coeficiente |
+|---|---|---|
+| Melamina / aglomerado / OSB / ENF | 2420×1200 → 2720×1200 | **× 1.16** |
+| Laca y chapa de madera | 2420×1200 → 3050×1200 | **× 1.10** |
+| Laca y chapa de madera | 3050×1220 → 3600×1220 | **× 1.15** |
+| Panel de aluminio tipo panal | 2420×1200 → 2720×1200 | **× 1.25** |
+
+Esto explica el hallazgo 🟠4 de la auditoría: las tres bandas escritas a mano
+(y el `0` en la banda 2.7–3.05) son un intento de codificar estos coeficientes
+sin tenerlos. **El cálculo correcto es precio base × coeficiente**, no tres
+precios independientes.
+
+⚠️ **Ojo con los 2.73 m de MATRIZ:** 2730 mm **excede los 2720 mm** donde topan
+los coeficientes de melamina y de panel de aluminio. En chapa de madera sí
+entra en el tramo ×1.10. Hay que verificar material por material si la altura
+del proyecto obliga a saltar de tramo o cambiar de sustrato.
+
+### Otras reglas de la P.12 que el Excel no aplica
+
+- **Mínimos facturables:** puerta de gabinete y panel europeo de menos de
+  0.3 m² se cobran como 0.3 m². Otras partidas, menos de 0.5 m² se cobran
+  como 0.5 m².
+- **Piso por precio de fábrica:** si el costo por área de una pieza cae por
+  debajo del precio de fábrica tabulado, se cobra el tabulado. Ejemplo del
+  manual: G-39C de 1000×50×18 mm da 24.3, pero se factura **63**.
+- **Veta horizontal ×1.2.** **Sustrato especial ×1.5.**
+- **Color especial ×1.1**, y muestra de color a 300 元.
+- Laca y chapa por debajo de 0.09 m² se cobran a precio de listón.
+
+Ninguno de estos mínimos ni recargos está en el Excel, y todos empujan el
+costo **hacia arriba**.
+
+---
+
+## 5. Preguntas abiertas
+
+1. ~~¿En qué moneda está la columna `COSTO REAL`?~~ → **RMB, precio de fábrica.
+   Resuelto** (sección 4).
 2. **¿Qué margen se va a correr?** ¿Uno solo, o distinto por partida (gabinete
-   vs. puerta vs. isla)?
+   vs. puerta vs. isla)? El manual trae una columna `Selling Price` propia de
+   COOMO: falta ver si trae valores en el A12 o si la define el franquiciatario.
 3. **¿El factor 3.5** que multiplica los interiores es "m² de tablero por m² de
-   fachada"? Es el multiplicador más pesado del archivo.
+   fachada"? Es el multiplicador más pesado del archivo. No aparece en la P.12
+   del A11 — hay que buscarlo en la sección de cuerpo de gabinete (P.301).
 4. **¿Con cuál entidad está firmada la franquicia** — COOMO (Dongguan) o
    KOOMO CASA (Jiangsu)? Determina el alcance en carpintería fija.
 5. **¿Qué es "CNC"** en la lista de líneas de marca?
+6. **¿Qué cambió entre A11 y A12?** El A12 se hizo explícitamente "para
+   México". Si trae precios distintos, manda el A12.
 
 ---
 
-## 5. Documentos y dónde viven
+## 6. Documentos y dónde viven
 
-Los archivos del negocio están repartidos en **dos cuentas de Google**:
+Los archivos del negocio están repartidos en **dos cuentas de Google**. La
+cuenta de empresa ya está conectada como conector de Drive, así que se puede
+leer directo desde la sesión.
 
-**Cuenta personal** (`jromanomasri@gmail.com`):
+**Cuenta personal** (`jromanomasri@gmail.com`) — *no conectada*:
 - `1.楷模报价册-出厂价20250630.pdf` — catálogo COOMO a precio de fábrica (出厂价), corte 30/jun/2025
 - `Mexico-Manhattan-Furnishing 04012026 (1).xlsx` — posible proyecto de Nueva York
-- Doc `COOMO` compartido por `esdelirarte@gmail.com`
+- **`Matriz_Precios_1.xlsx`** — el archivo auditado en la sección 3
 
-**Cuenta de la empresa** (avatar "C"):
-- `lista de precio cabinets` (antes `墨西哥定制报价.pdf`) — cotización a detalle para México
-- `楷模定制技术报价手册 A12版` — **manual técnico de cotización COOMO, versión A12**; contiene la lógica del cálculo rápido
-- `BRANDBOOK.pdf`, `BRANDBOOK.ai`, `LOGO.ai`, `LOGO-01.png`, `ACCESO SM`, `iluminacion.pdf`
+**Cuenta de empresa** (`coomomx@gmail.com`) — *conectada*:
+- `Lista de precio cabinets` (PDF, 34 MB) — **manual técnico A11**, ver sección 4
+- `楷模定制技术报价手册 A12版2026.7.01给墨西哥.xlsx` (754 MB) — manual A12, ilegible por tamaño
+- `BRANDBOOK.pdf` (636 KB), `BRANDBOOK.ai` (58 MB), `LOGO.ai`, `LOGO-01/02.png`
+- `iluminacion.pdf` (117 MB), carpeta `CATALOGOS`, carpeta `MULTIMEDIA`
+- `AGOSTO Content_Calendar_COOMO` (Sheets, compartido por `esdelirarte@gmail.com`)
 
-**Nota:** el manual A12 es la pieza que falta para determinar cuál de las
-variantes del Excel es la correcta según COOMO.
+**Límite práctico:** subir archivos al chat topa en 30 MB, y este entorno no
+alcanza `drive.google.com` por red. Todo lo grande entra por el conector de
+Drive, y lo que el conector no puede extraer hay que exportarlo a un formato
+liviano (CSV) y volver a subirlo al Drive.
 
 ---
 
-## 6. Siguientes pasos
+## 7. Siguientes pasos
 
-1. Leer el manual técnico **A12** y la cotización a detalle.
-2. Cruzar los costos del Excel (1015, 1746, 1003, 1304, 344, 1198, 213, 330)
-   contra el catálogo de precio de fábrica, para determinar la moneda.
-3. Corregir el Excel: columna de margen viva, bandas de altura consistentes,
-   referencias reparadas, doble factor de la isla eliminado, puertas de cocina
+1. **Exportar el A12 a CSV** y subirlo al Drive de la empresa, para comparar sus
+   precios y coeficientes contra los del A11 ya leído. Es el único archivo clave
+   que sigue sin poder abrirse.
+2. **Subir `Matriz_Precios_1.xlsx` al Drive de la empresa** (hoy está en la
+   cuenta personal, que no está conectada). Sin él no se puede corregir el
+   archivo, solo describir los errores.
+3. **Rehacer el cálculo con la lógica real del manual:** precio base a
+   2420×1200 × coeficiente de tamaño, en vez de tres bandas de altura escritas a
+   mano. Verificar material por material qué pasa con los 2.73 m.
+4. **Aplicar las reglas que faltan:** mínimos de 0.3 y 0.5 m², piso por precio
+   de fábrica tabulado, recargos por veta horizontal, sustrato y color especial.
+5. **Corregir los errores de la auditoría:** columna de margen viva, referencias
+   `#REF!` reparadas, doble factor de la isla eliminado, puertas de cocina
    incluidas en el total.
-4. Añadir un bloque de costeo de importación: TC + flete + arancel + IVA, para
-   llegar a precio de venta real.
-5. Evaluar una versión web del cotizador en este repositorio.
+6. **Añadir el bloque de costeo de importación:** TC RMB→MXN + flete + arancel +
+   pedimento + IVA. Hoy el archivo se queda en precio de fábrica en yuanes, que
+   es apenas el punto de partida.
+7. **Definir el margen** (pregunta abierta 2) y evaluar una versión web del
+   cotizador en este repositorio.
